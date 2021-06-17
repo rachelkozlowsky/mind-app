@@ -1,0 +1,43 @@
+
+<%= form_tag(contents_path,method: :get) do %>
+  <div class="form-group">
+    <%= label_tag :tags %>
+    <%=select_tag 'tags[]', options_for_select(current_user.tags.pluck(:name), params[:tags]),class:'select2 form-control', multiple: 'multiple'%>
+  </div>
+  <div class="actions">
+    <%=submit_tag('Search',class:'btn btn-primary') %>
+    <%=link_to "New Content", new_content_path,class:'btn btn-info' %>
+  </div>
+<% end %>
+<div class="page-header">
+  <h1><%=t 'Contents' %></h1>
+</div>
+<table class="table table-striped table-responsive">
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Description</th>
+      <th>Tags</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <%@contents.each do |contents| %>
+      <tr>
+        <td><%=contents.title %></td>
+        <td><%=contents.description %></td>
+        <td><%=contents.tags.pluck(:name).join(', ') %></td>
+        <td>
+          <%= link_to content_tag(:i,nil, class: ["fa", "fa-eye"]),
+                      content_path(contents), :class => 'btn btn-success btn-xs' %>
+          <%= link_to content_tag(:i,nil, class: ["fa", "fa-edit"]),
+                      edit_content_path(contents), :class => 'btn btn-primary btn-xs' %>
+          <%= link_to content_tag(:i,nil, class: ["fa", "fa-trash"]),
+                      content_path(contents), :method => :delete,
+                      :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) },
+                      :class => 'btn btn-xs btn-danger' %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
